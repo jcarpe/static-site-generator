@@ -142,3 +142,28 @@ def markdown_to_blocks(markdown: str):
     # For simplicity, split by double newlines to get paragraphs
     blocks = [p.strip() for p in markdown.split("\n\n") if p.strip()]
     return blocks
+
+def block_to_block_type(block: str):
+    if block.startswith("# "):
+        return BlockType.HEADING
+    elif block.startswith("## "):
+        return BlockType.HEADING
+    elif block.startswith("### "):
+        return BlockType.HEADING
+    elif block.startswith("#### "):
+        return BlockType.HEADING
+    elif block.startswith("##### "):
+        return BlockType.HEADING
+    elif block.startswith("###### "):
+        return BlockType.HEADING
+    elif block.startswith("> "):
+        return BlockType.QUOTE
+    elif block.startswith("- ") or block.startswith("* ") or re.match(r"^\d+\. ", block):
+        if re.match(r"^\d+\. ", block):
+            return BlockType.ORDERED_LIST
+        else:
+            return BlockType.UNORDERED_LIST
+    elif block.startswith("```") and block.endswith("```"):
+        return BlockType.CODE
+    else:
+        return BlockType.PARAGRAPH

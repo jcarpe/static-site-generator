@@ -2,6 +2,8 @@ import unittest
 from textnode import TextNode, TextType
 from htmlnode import LeafNode
 from conversion import (
+    BlockType,
+    block_to_block_type,
     extract_markdown_images, 
     extract_markdown_links, 
     markdown_to_blocks,
@@ -243,5 +245,38 @@ This is the same paragraph on a new line
                 "- This is a list\n- with items",
             ],
         )
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_block_to_block_type(self):
+        md = """
+This is **bolded** paragraph
+
+``` python
+def hello_world():
+    print("Hello, world!")
+```
+
+> This is a quote
+
+- This is a list
+- with items
+
+1. This is an ordered list
+2. with items
+"""
+        blocks = markdown_to_blocks(md)
+        block_types = [block_to_block_type(block) for block in blocks]
+        
+        self.assertEqual(
+            block_types,
+            [
+                BlockType.PARAGRAPH,
+                BlockType.CODE,
+                BlockType.QUOTE,
+                BlockType.UNORDERED_LIST,
+                BlockType.ORDERED_LIST,
+            ],
+        )
+
 if __name__ == "__main__":
     unittest.main()
